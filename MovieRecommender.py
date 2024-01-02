@@ -44,8 +44,10 @@ def get_num_of_movies():
                 break
             else:
                 print("Please enter a number greater than or equal to 1")
+                print55()
         except ValueError:
             print("Please enter a valid integer")
+            print55()
     return num_of_movies
 
 #Displaying the desired number of movies
@@ -59,9 +61,10 @@ def display_top_movies(num):
     # Assuming q_movies is a DataFrame you already have
     result = q_movies[['title', 'vote_count', 'vote_average', 'score']].head(num)
     # Print the result
-    print("-"*65)
+    print(f"Here are the top {num} movies:")
+    print55()
     print(result)
-    print("-"*65)
+    print55()
 #Popularity-Based-Method-END--------------------------------------------------------------------------------------------
 
 #Content-Based-Method---------------------------------------------------------------------------------------------------
@@ -102,49 +105,62 @@ def get_recommendations_by_title(title, cosine_sim=cosine_sim):
     # Get the movie indices
     movie_indices = [i[0] for i in sim_scores]
 
-    # Return the top 10 most similar movies
-    return df2['title'].iloc[movie_indices]
+    # Return the top 10 most similar movie titles with each title on a separate line
+    return '\n'.join(df2['title'].iloc[movie_indices])
 
 def launch_content_based():
     title = get_movie_title()
+    print(f"~Here are movies similar to ({title})")
     print(get_recommendations_by_title(title))
+    print55()
 
-def launch_content_based_method():
+def launch_content_based_init():
     try:
         launch_content_based()
     except KeyError:
-        print("-" * 55)
-        print("Movie Not Found Among Movies Set. Please try again...")
-        launch_content_based_method()
+        print("Movie Not Found.\nPlease try again after checking movie title...")
+        print55()
+        launch_content_based_init()
 #Content-Based-Method-END-----------------------------------------------------------------------------------------------
+
+#Collaborative-Filtering------------------------------------------------------------------------------------------------
+
+#Collaborative-Filtering-END--------------------------------------------------------------------------------------------
 
 #General-Methods--------------------------------------------------------------------------------------------------------
 def launch_program():
     print("+" * 55)
     print("       Welcome to Movie Recommendation System!")
-    print("-"*55)
+    print55()
+
+def print55():
+    print("-" * 55)
 
 #Choosing A method for recommending:
 def choose_recc_method():
     while True:
-        user_in = input("Choose Recommendation Method By Inputting Its Number: \n0: By Popularity"
-                        "\n1: By Content Based\n2: By Collaborative Filtering\n3: To Exit...\n" + "-" * 55 + "\nYour Choice: ")
-        print("-"*55)
+        user_in = input("Choose Recommendation Method By Inputting Its Number: \n1: Most Popular"
+                        "\n2: Similar Movies By Movie Title\n3: By Collaborative Filtering"
+                        "\n0: To Exit...\n" + "-" * 55 + "\nYour Choice: ")
+        print55()
         try:
             user_in_int = int(user_in)
             if user_in_int in [0, 1, 2, 3]:
                 return user_in_int
             else:
                 print("Please choose a valid number!")
-                print("-" * 55)
+                print55()
         except ValueError:
             print("Invalid input. Please enter a valid number.")
-            print("-" * 55)
+            print55()
 
 def get_movie_title():
     movie_title = input('Enter movie title: ')
-    print("-" * 55)
-    return movie_title
+    print55()
+    if movie_title.isupper():
+        return movie_title
+    else:
+        return movie_title.title()
 #General-Methods-END----------------------------------------------------------------------------------------------------
 
 #Main-------------------------------------------------------------------------------------------------------------------
@@ -153,19 +169,18 @@ if __name__ == "__main__":
     # Choosing a method for recommendation
     while True:
         user_choice = choose_recc_method()
-        if user_choice == 0:
+        if user_choice == 1:
             print("Recommendation By Popularity...")
             num_movies = get_num_of_movies()
             display_top_movies(num_movies)
-        elif user_choice == 1:
-            print("Recommendation By Content Based...")
-            launch_content_based_method()
-            print("-" * 55)
         elif user_choice == 2:
+            print("Recommendation By Content Based...")
+            launch_content_based_init()
+        elif user_choice == 3:
             print("Recommendation By Collaborative Filtering...")
             print("Coming Soon...")
-            print("-" * 55)
-        elif user_choice == 3:
+            print55()
+        elif user_choice == 0:
             print("Good Bye!")
             print("+" * 55)
             time.sleep(1)
