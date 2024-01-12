@@ -5,6 +5,8 @@ import pandas as pd
 #Reading Files
 df1=pd.read_csv('tmdb_5000_credits.csv')
 df2=pd.read_csv('tmdb_5000_movies.csv')
+movies_data = pd.read_csv('tmdb_5000_movies.csv')
+ratings_data = pd.read_csv('ratings_small.csv')# Select relevant features for collaborative filtering
 
 #Defining Columns
 df1.columns = ['id','tittle','cast','crew']
