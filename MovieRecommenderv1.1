@@ -170,22 +170,25 @@ accuracy.rmse(predictions)
 print("-" * 55)
 
 #user id range 1 - 665
-user_id_to_recommend = 659
+###########user_id_to_recommend = 659
 
+def get_movie_recommendations(user_id_to_recommend, trainset, model, movies_data, k=10):
+    try:
+        # Check if the user ID is part of the training set
+        if user_id_to_recommend in trainset.all_users():
+            # Map the external user ID to the internal user ID
+            internal_user_id = trainset.to_inner_uid(user_id_to_recommend)
+            user_predictions = model.get_neighbors(internal_user_id, k=k)
+            
+            # Get movie titles from the original movies dataset
+            recommended_movie_titles = movies_data.loc[movies_data['id'].isin(user_predictions), 'title'].tolist()
+            
+            return recommended_movie_titles
+        else:
+            return "Error: User {} is not part of the trainset.".format(user_id_to_recommend)
+    except ValueError as e:
+        return "Error making recommendations: {}".format(e)
 
-
-try:
-    # Map the external user ID to the internal user ID
-    internal_user_id = trainset.to_inner_uid(user_id_to_recommend)
-    user_predictions = model.get_neighbors(internal_user_id, k=10)
-
-    # Get movie titles from the original movies dataset
-    recommended_movie_titles = movies_data.loc[movies_data['id'].isin(user_predictions), 'title'].tolist()
-
-    print("Top 10 Movie Recommendations for User", user_id_to_recommend, ":", recommended_movie_titles)
-except ValueError:
-    print("Error making recommendations.")
-    
 print("-" * 55)
 
 #Collaborative-Filtering-END--------------------------------------------------------------------------------------------
@@ -241,7 +244,10 @@ if __name__ == "__main__":
             launch_content_based_init()
         elif user_choice == 3:
             print("Recommendation By Collaborative Filtering...")
-            print("Coming Soon...")
+            
+            user_id_to_recommend = 659
+            recommendations = get_movie_recommendations(user_id_to_recommend, trainset, model, movies_data)
+            print("Top 10 Movie Recommendations for User", user_id_to_recommend, ":", recommendations)
             print55()
         elif user_choice == 0:
             print("Good Bye!")
